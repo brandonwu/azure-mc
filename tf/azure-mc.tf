@@ -6,7 +6,12 @@ locals {
 
 variable "rcon_pwd" {
   type        = string
-  description = "Password for RCON, if enabled"
+  description = "Password for RCON, if enabled one must be set"
+}
+
+variable "spigot_server_filename" {
+  type        = string
+  description = "Path to Spigot server jar"
 }
 
 provider "azurerm" {
@@ -40,11 +45,16 @@ module "mc-container" {
   minecraft_rcon          = local.rcon_enabled
   minecraft_rcon_pwd      = var.rcon_pwd
   cpu                     = 1
-  ram                     = 2
+  ram                     = 2.5
+  ram_jvm                 = 2
+  spigot_download_url     = module.mc-micromanage.spigot_server_url
 }
 
-output "container_group_id" {
-  value = module.mc-container.container_group_id
+module "mc-micromanage" {
+  source                 = "./modules/mc-micromanage"
+  resource_group_name    = azurerm_resource_group.mc.name
+  storage_account_name   = azurerm_storage_account.mc.name
+  spigot_server_filename = var.spigot_server_filename
 }
 
 output "ip" {

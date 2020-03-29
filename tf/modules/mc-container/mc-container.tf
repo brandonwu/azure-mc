@@ -12,11 +12,15 @@ resource "azurerm_container_group" "mc" {
       protocol = "TCP"
     }
     environment_variables = {
-      EULA        = "true"
-      VERSION     = var.minecraft_version
-      TYPE        = var.minecraft_type
-      ENABLE_RCON = var.minecraft_rcon
-      MEMORY      = "${var.ram}G"
+      EULA                = "true"
+      VERSION             = var.minecraft_version
+      TYPE                = var.minecraft_type
+      ENABLE_RCON         = var.minecraft_rcon
+      INIT_MEMORY         = "1G"
+      MAX_MEMORY          = "${var.ram_jvm}G"
+      BUILD_FROM_SOURCE   = var.build_from_source
+      CONSOLE             = "false"
+      SPIGOT_DOWNLOAD_URL = var.spigot_download_url
     }
     secure_environment_variables = {
       RCON_PASSWORD = var.minecraft_rcon_pwd
@@ -27,6 +31,10 @@ resource "azurerm_container_group" "mc" {
       storage_account_name = var.storage_account_name
       storage_account_key  = var.storage_account_key
       share_name           = azurerm_storage_share.mc.name
+    }
+    readiness_probe {
+      exec                  = ["mcstatus", "localhost"]
+      initial_delay_seconds = 30
     }
   }
 

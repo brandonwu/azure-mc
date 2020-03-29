@@ -33,6 +33,11 @@ variable "ram" {
   description = "GB of memory for server container"
 }
 
+variable "ram_jvm" {
+  type        = number
+  description = "GB of memory for JVM"
+}
+
 variable "minecraft_version" {
   type        = string
   description = "Version of Minecraft to run: LATEST, SNAPSHOT, or a specific version number"
@@ -54,4 +59,15 @@ variable "minecraft_rcon" {
 variable "minecraft_rcon_pwd" {
   type        = string
   description = "Password for RCON if enabled"
+}
+
+variable "build_from_source" {
+  type        = bool
+  description = "True to build Spigot/Bukkit from source"
+  default     = false
+}
+
+variable "spigot_download_url" {
+  type        = string
+  description = "URL to download Spigot from"
 }
